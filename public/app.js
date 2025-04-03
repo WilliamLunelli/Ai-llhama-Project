@@ -338,4 +338,145 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- Fim da implementação para análise de PDF ---
+}); document.addEventListener("DOMContentLoaded", () => {
+    // Elementos já existentes no seu código atual...
+
+    // ADICIONE ESTE BLOCO AQUI ↓↓↓
+    // --- Início da implementação para análise de PDF ---
+
+    // Elementos da interface de PDF
+    const pdfFileInput = document.getElementById('pdf-file');
+    const pdfFilename = document.getElementById('pdf-filename');
+    const analyzePdfButton = document.getElementById('analyze-pdf-button');
+    const pdfLoading = document.getElementById('pdf-loading');
+    const pdfResult = document.getElementById('pdf-result');
+    const pdfAnalysisContent = document.getElementById('pdf-analysis-content');
+    const pdfExtractedContent = document.getElementById('pdf-extracted-content');
+
+    // Elementos para comparação de PDFs
+    const comparePdf1 = document.getElementById('compare-pdf1');
+    const comparePdf2 = document.getElementById('compare-pdf2');
+    const comparePdf1Filename = document.getElementById('compare-pdf1-filename');
+    const comparePdf2Filename = document.getElementById('compare-pdf2-filename');
+    const comparePdfsButton = document.getElementById('compare-pdfs-button');
+    const pdfComparisonResult = document.getElementById('pdf-comparison-result');
+    const pdfComparisonContent = document.getElementById('pdf-comparison-content');
+
+    // Handler para arquivos PDF
+    function handleFileSelection(fileInput, filenameDisplay) {
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files && fileInput.files[0]) {
+                filenameDisplay.textContent = fileInput.files[0].name;
+            } else {
+                filenameDisplay.textContent = 'Nenhum arquivo selecionado';
+            }
+        });
+    }
+
+    // Configurar uploads
+    if (pdfFileInput && pdfFilename) {
+        handleFileSelection(pdfFileInput, pdfFilename);
+    }
+
+    if (comparePdf1 && comparePdf1Filename) {
+        handleFileSelection(comparePdf1, comparePdf1Filename);
+    }
+
+    if (comparePdf2 && comparePdf2Filename) {
+        handleFileSelection(comparePdf2, comparePdf2Filename);
+    }
+
+    // Análise de PDF
+    if (analyzePdfButton) {
+        analyzePdfButton.addEventListener('click', async function () {
+            if (!pdfFileInput.files || !pdfFileInput.files[0]) {
+                alert('Por favor, selecione um arquivo PDF');
+                return;
+            }
+
+            // Mostrar loading e esconder resultado anterior
+            pdfLoading.style.display = 'block';
+            pdfResult.style.display = 'none';
+            analyzePdfButton.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('pdf', pdfFileInput.files[0]);
+
+                const response = await fetch('/api/pdf/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Exibir os resultados
+                    pdfAnalysisContent.innerHTML = formatComparisonResult(data.analysis);
+                    pdfExtractedContent.textContent = data.extractedText;
+
+                    // Mostrar resultado e esconder loading
+                    pdfResult.style.display = 'block';
+                } else {
+                    alert(`Erro: ${data.error || 'Falha ao processar o PDF'}`);
+                }
+            } catch (error) {
+                console.error('Erro ao processar PDF:', error);
+                alert('Ocorreu um erro ao processar o arquivo.');
+            } finally {
+                pdfLoading.style.display = 'none';
+                analyzePdfButton.disabled = false;
+            }
+        });
+    }
+
+    // Comparação de PDFs
+    if (comparePdfsButton) {
+        comparePdfsButton.addEventListener('click', async function () {
+            if (!comparePdf1.files || !comparePdf1.files[0] || !comparePdf2.files || !comparePdf2.files[0]) {
+                alert('Por favor, selecione dois arquivos PDF');
+                return;
+            }
+
+            pdfLoading.style.display = 'block';
+            pdfComparisonResult.style.display = 'none';
+            comparePdfsButton.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('pdf1', comparePdf1.files[0]);
+                formData.append('pdf2', comparePdf2.files[0]);
+
+                const response = await fetch('/api/pdf/compare', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    pdfComparisonContent.innerHTML = formatComparisonResult(data.comparison);
+                    pdfComparisonResult.style.display = 'block';
+                } else {
+                    alert(`Erro: ${data.error || 'Falha ao comparar PDFs'}`);
+                }
+            } catch (error) {
+                console.error('Erro ao comparar PDFs:', error);
+                alert('Ocorreu um erro ao comparar os arquivos.');
+            } finally {
+                pdfLoading.style.display = 'none';
+                comparePdfsButton.disabled = false;
+            }
+        });
+    }
+
+    // --- Fim da implementação para análise de PDF ---
 });

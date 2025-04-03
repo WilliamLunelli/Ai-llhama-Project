@@ -64,8 +64,8 @@ function handleBudgetComparison(req, res) {
       Sua tarefa é comparar dois orçamentos diferentes e determinar qual oferece a melhor opção para 
       o cliente, considerando:
       
-      1. Preço total (qual orçamento é mais barato no geral)
-      2. Preço por item (identificar itens específicos mais baratos em cada orçamento)
+      1. Preço total (Preste bastante atenção nos valores) (qual orçamento é mais barato no geral)
+      2. Preço por item (Preste bastante atenção nos valores) (identificar itens específicos mais baratos em cada orçamento)
       3. Completude (verificar se algum orçamento está faltando produtos presentes no outro)
       4. Qualidade da oferta (condições de pagamento, prazos, garantias, etc.)
       5. Relação custo-benefício geral
@@ -83,7 +83,7 @@ function handleBudgetComparison(req, res) {
             const prompt = `
       Por favor, compare os seguintes orçamentos e me diga qual é a melhor opção de compra,
       destacando as diferenças de preço, produtos que estão faltando em cada um, e qual oferece
-      o melhor custo-benefício geral:
+      o melhor custo-benefício geral. Preste atenção nós valores, tente não errar na leitura:
       
       ORÇAMENTO 1:
       ${JSON.stringify(budget1, null, 2)}

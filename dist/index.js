@@ -10,13 +10,20 @@ const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const config_1 = __importDefault(require("./config/config"));
 const agentRoutes_1 = __importDefault(require("./routes/agentRoutes"));
+const pdfRoutes_1 = __importDefault(require("./routes/pdfRoutes"));
+const fs_extra_1 = __importDefault(require("fs-extra"));
 const app = (0, express_1.default)();
 // Middleware
 app.use((0, cors_1.default)());
-app.use(body_parser_1.default.json());
+app.use(body_parser_1.default.json({ limit: "10mb" }));
+app.use(body_parser_1.default.urlencoded({ extended: true, limit: "10mb" }));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
+// Garantir que a pasta uploads existe
+const uploadDir = path_1.default.join(__dirname, "../uploads");
+fs_extra_1.default.ensureDirSync(uploadDir);
 // Rotas
 app.use("/api/agent", agentRoutes_1.default);
+app.use("/api/pdf", pdfRoutes_1.default);
 // Rota de teste
 app.get("/api/health", (req, res) => {
     res.json({ status: "OK", message: "O servidor está funcionando!" });

@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
+  analyzePdfButton.addEventListener('click', async function () {
+    console.log("🚀 Iniciando upload de PDF");
+    console.log("📋 Arquivo:", pdfFileInput.files[0]);
+
+    // ... resto do código
+  });
   // Elementos da interface
   const chatMessages = document.getElementById("chat-messages");
   const messageInput = document.getElementById("message-input");

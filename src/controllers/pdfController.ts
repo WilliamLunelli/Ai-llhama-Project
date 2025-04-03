@@ -11,6 +11,8 @@ export async function handlePdfUpload(
   req: Request,
   res: Response
 ): Promise<void> {
+  console.log("🔍 PDF Upload - Iniciando processamento");
+  console.log("📄 Arquivo recebido:", req.file);
   try {
     if (!req.file) {
       res.status(400).json({ error: "Nenhum arquivo foi enviado" });

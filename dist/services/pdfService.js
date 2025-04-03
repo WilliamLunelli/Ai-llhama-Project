@@ -16,22 +16,33 @@ exports.extractTextFromPDF = extractTextFromPDF;
 exports.extractBudgetDataFromText = extractBudgetDataFromText;
 exports.ensureUploadsDirectory = ensureUploadsDirectory;
 exports.removeFile = removeFile;
-// src/services/pdfService.ts
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const pdf_parse_1 = __importDefault(require("pdf-parse"));
-/**
- * Serviço para processamento de arquivos PDF
- */
 function extractTextFromPDF(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // Ler o arquivo do disco
+            // Ler o arquivo do disco com opções mais robustas
             const dataBuffer = yield fs_extra_1.default.readFile(filePath);
-            // Extrair o texto usando pdf-parse
-            const pdfData = yield (0, pdf_parse_1.default)(dataBuffer);
-            // Retornar o texto extraído
-            return pdfData.text;
+            // Configurações avançadas de parse
+            const options = {
+                pagerender: (pageData) => {
+                    let renderText = "";
+                    const textContent = pageData.getTextContent();
+                    return textContent.then((textItems) => {
+                        textItems.items.forEach((textItem) => {
+                            renderText += textItem.str + " ";
+                        });
+                        return renderText;
+                    });
+                },
+                max: 10000, // Limitar número de páginas para processamento
+            };
+            // Extrair o texto usando pdf-parse com opções avançadas
+            const pdfData = yield (0, pdf_parse_1.default)(dataBuffer, options);
+            // Normalizar e limpar o texto extraído
+            const cleanedText = normalizeExtractedText(pdfData.text);
+            return cleanedText;
         }
         catch (error) {
             console.error("Erro ao extrair texto do PDF:", error);
@@ -39,24 +50,58 @@ function extractTextFromPDF(filePath) {
         }
     });
 }
-/**
- * Verifica se um texto contém dados de orçamento e tenta extrair um objeto JSON
- */
+function normalizeExtractedText(text) {
+    // Remove excesso de espaços em branco
+    text = text.replace(/\s+/g, " ").trim();
+    // Remove caracteres não imprimíveis
+    text = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+    // Normaliza quebras de linha
+    text = text.replace(/\n{3,}/g, "\n\n");
+    return text;
+}
 function extractBudgetDataFromText(text) {
     try {
-        // Tentativa de encontrar dados JSON no texto
-        const jsonMatches = text.match(/\{[\s\S]*\}/g);
-        if (jsonMatches && jsonMatches.length > 0) {
-            // Tentar parsear o primeiro match como JSON
-            return JSON.parse(jsonMatches[0]);
+        // Expandir estratégias de extração de JSON
+        const jsonMatches = [
+            // Tenta encontrar JSON entre chaves
+            ...(text.match(/\{[\s\S]*?\}/g) || []),
+            // Tenta encontrar blocos de texto que pareçam JSON
+            ...(text.match(/[\[\{].*?[\}\]]/g) || []),
+        ];
+        for (const match of jsonMatches) {
+            try {
+                // Tenta parsear cada match
+                const parsed = JSON.parse(match);
+                // Verifica se o JSON tem estrutura de orçamento
+                if (isValidBudgetStructure(parsed)) {
+                    return parsed;
+                }
+            }
+            catch (_a) { }
         }
-        // Se não encontrou JSON, retornar null
         return null;
     }
     catch (error) {
         console.error("Erro ao extrair dados de orçamento do texto:", error);
         return null;
     }
+}
+function isValidBudgetStructure(data) {
+    // Critérios para validar se o JSON parece ser um orçamento
+    if (typeof data !== "object" || data === null)
+        return false;
+    const possibleBudgetKeys = [
+        "items",
+        "total",
+        "cliente",
+        "data",
+        "products",
+        "price",
+        "quantidade",
+        "valor_total",
+        "valor_unitario",
+    ];
+    return possibleBudgetKeys.some((key) => key in data);
 }
 /**
  * Cria o diretório de uploads se não existir

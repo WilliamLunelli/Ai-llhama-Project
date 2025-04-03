@@ -434,49 +434,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Comparação de PDFs
-    if (comparePdfsButton) {
-        comparePdfsButton.addEventListener('click', async function () {
-            if (!comparePdf1.files || !comparePdf1.files[0] || !comparePdf2.files || !comparePdf2.files[0]) {
-                alert('Por favor, selecione dois arquivos PDF');
-                return;
-            }
-
-            pdfLoading.style.display = 'block';
-            pdfComparisonResult.style.display = 'none';
-            comparePdfsButton.disabled = true;
-
-            try {
-                const formData = new FormData();
-                formData.append('pdf1', comparePdf1.files[0]);
-                formData.append('pdf2', comparePdf2.files[0]);
-
-                const response = await fetch('/api/pdf/compare', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erro HTTP: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                if (data.success) {
-                    pdfComparisonContent.innerHTML = formatComparisonResult(data.comparison);
-                    pdfComparisonResult.style.display = 'block';
-                } else {
-                    alert(`Erro: ${data.error || 'Falha ao comparar PDFs'}`);
-                }
-            } catch (error) {
-                console.error('Erro ao comparar PDFs:', error);
-                alert('Ocorreu um erro ao comparar os arquivos.');
-            } finally {
-                pdfLoading.style.display = 'none';
-                comparePdfsButton.disabled = false;
-            }
-        });
-    }
-
-    // --- Fim da implementação para análise de PDF ---
 });

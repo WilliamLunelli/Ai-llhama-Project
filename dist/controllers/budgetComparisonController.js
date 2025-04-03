@@ -83,7 +83,8 @@ function handleBudgetComparison(req, res) {
             const prompt = `
       Por favor, compare os seguintes orçamentos e me diga qual é a melhor opção de compra,
       destacando as diferenças de preço, produtos que estão faltando em cada um, e qual oferece
-      o melhor custo-benefício geral. Preste atenção nós valores, tente não errar na leitura:
+      o melhor custo-benefício geral. Preste atenção nós valores, tente não errar na leitura, as
+      vezes aparece valores como a quantidade em 18,000 que significa apenas 18:
       
       ORÇAMENTO 1:
       ${JSON.stringify(budget1, null, 2)}

@@ -129,6 +129,108 @@
       </div>
     </div>
 
+    <div class="tabs">
+      <button class="tab-button active" data-tab="chat">Chat Assistente</button>
+      <button class="tab-button" data-tab="comparison">
+        Comparar Orçamentos
+      </button>
+      <button class="tab-button" data-tab="pdf">Analisar PDF</button>
+    </div>
+
+  </div>
+      
+  <!-- Aba de Análise de PDF -->
+  <div class="tab-pane" id="pdf-tab">
+    <div class="pdf-container">
+      <h2>Analisar Orçamento em PDF</h2>
+      <p class="instruction">
+        Faça upload de um arquivo PDF contendo um orçamento para análise detalhada:
+      </p>
+
+      <div class="pdf-upload-section">
+        <div class="upload-area" id="pdf-upload-area">
+          <img src="img/pdf-icon.png" alt="PDF" class="pdf-icon" onerror="this.style.display='none'">
+          <h3>Arraste e solte seu arquivo PDF ou</h3>
+          <div class="file-input-container">
+            <input type="file" id="pdf-file" class="file-input" accept=".pdf" />
+            <label for="pdf-file" class="file-label">Escolher arquivo</label>
+          </div>
+          <span id="pdf-filename" class="filename">Nenhum arquivo selecionado</span>
+        </div>
+        
+        <div class="pdf-actions">
+          <button id="analyze-pdf-button" class="primary-button" disabled>
+            Analisar PDF
+          </button>
+        </div>
+      </div>
+
+      <div id="pdf-loading" class="pdf-loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Processando o arquivo PDF e analisando seu conteúdo...</p>
+      </div>
+
+      <div id="pdf-result" class="pdf-result" style="display: none;">
+        <h3>Resultado da Análise</h3>
+        
+        <div class="pdf-tabs">
+          <button class="pdf-tab-button active" data-tab="analysis">Análise</button>
+          <button class="pdf-tab-button" data-tab="extracted">Texto Extraído</button>
+        </div>
+        
+        <div class="pdf-tab-content">
+          <div id="pdf-analysis" class="pdf-tab-pane active">
+            <div id="pdf-analysis-content" class="pdf-content"></div>
+          </div>
+          <div id="pdf-extracted" class="pdf-tab-pane">
+            <div id="pdf-extracted-content" class="pdf-content"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="pdf-comparison-section">
+        <h3>Comparar Dois Orçamentos em PDF</h3>
+        <p class="instruction">
+          Faça upload de dois arquivos PDF para comparar qual oferece as melhores condições:
+        </p>
+        
+        <div class="pdf-comparison-uploads">
+          <div class="pdf-upload-box">
+            <h4>Orçamento 1</h4>
+            <div class="file-input-container">
+              <input type="file" id="compare-pdf1" class="file-input" accept=".pdf" />
+              <label for="compare-pdf1" class="file-label">Escolher arquivo</label>
+            </div>
+            <span id="compare-pdf1-filename" class="filename">Nenhum arquivo selecionado</span>
+          </div>
+          
+          <div class="pdf-upload-box">
+            <h4>Orçamento 2</h4>
+            <div class="file-input-container">
+              <input type="file" id="compare-pdf2" class="file-input" accept=".pdf" />
+              <label for="compare-pdf2" class="file-label">Escolher arquivo</label>
+            </div>
+            <span id="compare-pdf2-filename" class="filename">Nenhum arquivo selecionado</span>
+          </div>
+        </div>
+        
+        <div class="pdf-comparison-actions">
+          <button id="compare-pdfs-button" class="primary-button" disabled>
+            Comparar PDFs
+          </button>
+        </div>
+        
+        <div id="pdf-comparison-result" class="pdf-comparison-result" style="display: none;">
+          <h4>Resultado da Comparação</h4>
+          <div id="pdf-comparison-content" class="pdf-content"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
     <script src="app.js"></script>
 
     <script>

@@ -3,8 +3,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import path from "path";
-import config from "./src/config/config";
-import agentRoutes from "./src/routes/agentRoutes";
+import config from "./config/config";
+import agentRoutes from "./routes/agentRoutes";
 
 const app = express();
 

@@ -36,7 +36,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // src/routes/agentRoutes.ts
 const express_1 = require("express");
 const agentController = __importStar(require("../controllers/agentController"));
+const budgetComparisonController = __importStar(require("../controllers/budgetComparisonController"));
 const router = (0, express_1.Router)();
 router.post("/general", agentController.handleGeneralQuery);
 router.post("/customer-support", agentController.handleCustomerSupport);
+router.post("/budget-comparison", budgetComparisonController.handleBudgetComparison);
 exports.default = router;

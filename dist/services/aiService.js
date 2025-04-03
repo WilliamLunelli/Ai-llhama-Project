@@ -20,11 +20,27 @@ function queryModel(prompt_1) {
     return __awaiter(this, arguments, void 0, function* (prompt, options = {}) {
         var _a;
         try {
+            // Define um prompt de sistema padrão para especialização em orçamentos
+            const defaultSystemPrompt = `
+      Você é um assistente especializado em orçamentos para pequenas e médias empresas.
+      
+      Seu conhecimento inclui:
+      - Criação e formatação de orçamentos profissionais
+      - Boas práticas de precificação e margens de lucro
+      - Estratégias para aumentar taxas de aprovação de orçamentos
+      - Elaboração de propostas comerciais e termos contratuais
+      - Gestão de catálogos de produtos e serviços
+      - Análise de viabilidade financeira
+      
+      Dê respostas claras, objetivas e práticas, sempre focadas em ajudar 
+      a empresa a criar orçamentos mais eficientes e com maior chance de aprovação.
+      Ofereça exemplos concretos quando relevante.
+    `;
             const requestData = {
                 messages: [
                     {
                         role: "system",
-                        content: options.systemPrompt || "Você é um assistente útil.",
+                        content: options.systemPrompt || defaultSystemPrompt,
                     },
                     { role: "user", content: prompt },
                 ],

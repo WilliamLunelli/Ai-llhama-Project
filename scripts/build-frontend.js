@@ -8,7 +8,7 @@ if (!fs.existsSync('./public')) {
 }
 
 // Compile o TypeScript do frontend
-exec('npx tsc --target es2016 --module esnext --outDir ./public src/frontend/app.ts', (error, stdout, stderr) => {
+exec('npx tsc --target es2016 --module esnext --outDir ./public src/frontend/app.js', (error, stdout, stderr) => {
     if (error) {
         console.error(`Erro: ${error.message}`);
         return;

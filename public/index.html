@@ -3,26 +3,160 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Agente de IA</title>
+    <title>Assistente de Orçamentos</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Agente de IA</h1>
+    <div class="header">
+      <h1>Assistente de Orçamentos IA</h1>
+      <p class="subtitle">
+        Seu consultor virtual para orçamentos mais eficazes
+      </p>
+    </div>
 
-    <div class="chat-container">
-      <div id="chat-messages" class="chat-messages"></div>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="chat">Chat Assistente</button>
+      <button class="tab-button" data-tab="comparison">
+        Comparar Orçamentos
+      </button>
+    </div>
 
-      <div class="input-container">
-        <input
-          type="text"
-          id="message-input"
-          placeholder="Digite sua mensagem aqui..."
-          autocomplete="off"
-        />
-        <button id="send-button">Enviar</button>
+    <div class="tab-content">
+      <!-- Aba do Chat -->
+      <div class="tab-pane active" id="chat-tab">
+        <div class="chat-container">
+          <div id="chat-messages" class="chat-messages"></div>
+
+          <div class="input-container">
+            <input
+              type="text"
+              id="message-input"
+              placeholder="Pergunte sobre orçamentos, precificação, margens de lucro..."
+              autocomplete="off"
+            />
+            <button id="send-button">Enviar</button>
+          </div>
+
+          <div class="suggestions">
+            <p>Experimente perguntar:</p>
+            <ul>
+              <li>
+                "Como calcular a margem de lucro ideal para meus produtos?"
+              </li>
+              <li>
+                "Quais são os elementos essenciais de um orçamento
+                profissional?"
+              </li>
+              <li>
+                "Como posso aumentar as chances de aprovação do meu orçamento?"
+              </li>
+              <li>"Quais termos e condições devo incluir no meu orçamento?"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aba de Comparação de Orçamentos -->
+      <div class="tab-pane" id="comparison-tab">
+        <div class="comparison-container">
+          <h2>Comparar Orçamentos</h2>
+          <p class="instruction">
+            Carregue dois arquivos de orçamento para compará-los e receber uma
+            análise de qual é mais vantajoso:
+          </p>
+
+          <div class="budget-upload-container">
+            <div class="budget-upload">
+              <h3>Orçamento 1</h3>
+              <div class="file-input-container">
+                <input
+                  type="file"
+                  id="budget1-file"
+                  class="file-input"
+                  accept=".json, .txt"
+                />
+                <label for="budget1-file" class="file-label"
+                  >Escolher arquivo</label
+                >
+                <span id="budget1-filename" class="filename"
+                  >Nenhum arquivo selecionado</span
+                >
+              </div>
+              <textarea
+                id="budget1-text"
+                placeholder="Ou cole o conteúdo do orçamento aqui (formato JSON)"
+              ></textarea>
+            </div>
+
+            <div class="budget-upload">
+              <h3>Orçamento 2</h3>
+              <div class="file-input-container">
+                <input
+                  type="file"
+                  id="budget2-file"
+                  class="file-input"
+                  accept=".json, .txt"
+                />
+                <label for="budget2-file" class="file-label"
+                  >Escolher arquivo</label
+                >
+                <span id="budget2-filename" class="filename"
+                  >Nenhum arquivo selecionado</span
+                >
+              </div>
+              <textarea
+                id="budget2-text"
+                placeholder="Ou cole o conteúdo do orçamento aqui (formato JSON)"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="comparison-actions">
+            <button id="compare-button" class="primary-button">
+              Comparar Orçamentos
+            </button>
+          </div>
+
+          <div id="comparison-result" class="comparison-result">
+            <h3>Resultado da Análise</h3>
+            <div id="comparison-content" class="comparison-content">
+              <p class="placeholder-text">
+                A análise comparativa aparecerá aqui após o processamento.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <script src="app.js"></script>
+
+    <script>
+      // Script simples para mudança de abas
+      document.addEventListener("DOMContentLoaded", function () {
+        // Buscar botões de abas
+        var tabButtons = document.querySelectorAll(".tab-button");
+
+        // Para cada botão, adicionar um listener de clique
+        tabButtons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            console.log("Clique em aba:", this.getAttribute("data-tab"));
+
+            // Desativar todas as abas
+            document.querySelectorAll(".tab-button").forEach(function (btn) {
+              btn.classList.remove("active");
+            });
+            document.querySelectorAll(".tab-pane").forEach(function (pane) {
+              pane.classList.remove("active");
+            });
+
+            // Ativar a aba clicada
+            this.classList.add("active");
+            var tabId = this.getAttribute("data-tab");
+            document.getElementById(tabId + "-tab").classList.add("active");
+          });
+        });
+      });
+    </script>
   </body>
 </html>

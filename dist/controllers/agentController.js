@@ -44,6 +44,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleGeneralQuery = handleGeneralQuery;
 exports.handleCustomerSupport = handleCustomerSupport;
+exports.handleBudgetAnalysis = handleBudgetAnalysis;
 const aiService = __importStar(require("../services/aiService"));
 function handleGeneralQuery(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -71,12 +72,54 @@ function handleCustomerSupport(req, res) {
                 return;
             }
             const systemPrompt = `
-      Você é um agente de suporte ao cliente especializado. 
+      Você é um agente de suporte ao cliente especializado em orçamentos e propostas comerciais. 
       Responda de forma clara, profissional e amigável.
-      Forneça apenas informações sobre produtos e serviços que existem.
+      Seu objetivo é ajudar os usuários a entenderem como usar melhor o sistema de orçamentos,
+      explicar boas práticas para criação de orçamentos eficazes e resolver quaisquer dúvidas
+      sobre preços, margens, condições de pagamento e outras questões relacionadas.
       Se não souber a resposta, sugira que o cliente entre em contato com um atendente humano.
     `;
             const response = yield aiService.queryModel(query, { systemPrompt });
+            res.json({ response });
+        }
+        catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+            res.status(500).json({ error: errorMessage });
+        }
+    });
+}
+function handleBudgetAnalysis(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { budgetData } = req.body;
+            if (!budgetData) {
+                res.status(400).json({ error: "Dados do orçamento são obrigatórios" });
+                return;
+            }
+            const systemPrompt = `
+      Você é um analista financeiro especializado em otimização de orçamentos.
+      Analise os dados do orçamento fornecido e ofereça recomendações específicas em:
+      
+      1. Análise da estrutura de preços e margens
+      2. Sugestões para aumentar o valor percebido
+      3. Identificação de oportunidades de upsell/cross-sell
+      4. Recomendações para aumentar a chance de aprovação
+      5. Possíveis pontos problemáticos que precisam de atenção
+      
+      Use exemplos específicos do orçamento fornecido e dados concretos.
+    `;
+            const prompt = `
+      Por favor, analise este orçamento e forneça recomendações detalhadas de melhoria:
+      
+      ${JSON.stringify(budgetData, null, 2)}
+      
+      Estruture sua análise em tópicos claros.
+    `;
+            const response = yield aiService.queryModel(prompt, {
+                systemPrompt,
+                temperature: 0.4,
+                maxTokens: 1500,
+            });
             res.json({ response });
         }
         catch (error) {
